@@ -66,3 +66,8 @@ App::importFile(APP. 'Core' , array(
 
 // App config
 App::importFolder(APP. 'Config');
+
+// Vendor autoload
+if( file_exists(VENDOR. 'autoload.php') ){
+	require_once VENDOR. 'autoload.php';
+}
