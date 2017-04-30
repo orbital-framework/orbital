@@ -402,7 +402,7 @@ abstract class Router{
 			'é', 'è', 'ê',
 			'í', 'ì', 'î',
 			'ó', 'ò', 'ô', 'õ',
-			'ú', 'ù', 'û'
+			'ú', 'ù', 'û', 'ç'
 		);
 
 		$nonAccents = array(
@@ -410,7 +410,7 @@ abstract class Router{
 			'e', 'e', 'e',
 			'i', 'i', 'i',
 			'o', 'o', 'o', 'o',
-			'u', 'u', 'u'
+			'u', 'u', 'u', 'c'
 		);
 
 		$text = str_replace($accents, $nonAccents, $text);
