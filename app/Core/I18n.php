@@ -6,7 +6,7 @@ abstract class I18n{
 	 * Active language
 	 * @var string
 	 */
-	private static $language = 'pt-br';
+	private static $language = 'en-us';
 
 	/**
 	 * Active language scope
@@ -38,7 +38,7 @@ abstract class I18n{
 		}
 
 		$folder = APP. 'i18n'. DS. $language;
-		
+
 		App::importFolder($folder);
 	}
 

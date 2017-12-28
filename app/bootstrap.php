@@ -11,7 +11,7 @@ if( !defined('ENVIRONMENT') ){
 
 	if( strpos($_SERVER['SERVER_NAME'], 'staging.') !== false ){
 		$environment = 'staging';
-	
+
 	}elseif( strpos($_SERVER['SERVER_NAME'], 'local.') !== false
 			 OR strpos($_SERVER['SERVER_NAME'], 'dev.') !== false ){
 		$environment = 'development';

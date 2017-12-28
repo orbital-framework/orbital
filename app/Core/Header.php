@@ -151,7 +151,7 @@ abstract class Header{
 	 * HTTP Headers
 	 * @var array
 	 */
-	private static $headers =  array();
+	private static $headers = array();
 
 	/**
 	 * Register if Headers are already sent
@@ -200,7 +200,7 @@ abstract class Header{
 	 * @return array
 	 */
 	public static function listHeaders(){
-		return (headers_sent()) ? headers_list() : self::$headers;
+		return ( headers_sent() ) ? headers_list() : self::$headers;
 	}
 
 	/**
@@ -214,7 +214,7 @@ abstract class Header{
 
 	/**
 	 * Set and redirect HTTP Header Location
-	 * @see Header::set();
+	 * @see Header::set()
 	 * @param string $url
 	 * @param int $code
 	 * @return void

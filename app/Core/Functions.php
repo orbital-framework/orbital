@@ -8,7 +8,7 @@
 function __autoload($class){
 
 	$file = str_replace('_', DS, $class). '.php';
-	
+
 	foreach (array(
 		APP. 'Classes'. DS. $file,
 		APP. 'Classes/Model'. DS. $file,
