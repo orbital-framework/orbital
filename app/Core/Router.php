@@ -33,6 +33,12 @@ abstract class Router{
 	public static $route = array();
 
 	/**
+	 * Path for routers
+	 * @var string
+	 */
+	public static $path = '/';
+
+	/**
 	 * "Routers" for errors - 404, 401...
 	 * @var array
 	 */
@@ -142,16 +148,50 @@ abstract class Router{
 	}
 
 	/**
+	 * Set path prefix to routers
+	 * @param string $path
+	 * @return void
+	 */
+	public static function setPath($path){
+
+		$path = '/'. trim($path, '/'). '/';
+		$path = str_replace('//', '/', $path);
+
+		self::$path = $path;
+	}
+
+	/**
+	 * Retrieve path prefix to routers
+	 * @return string
+	 */
+	public static function getPath(){
+		return self::$path;
+	}
+
+	/**
+	 * Set active route
+	 * @param array $route
+	 * @return void
+	 */
+	public static function setActiveRoute($route){
+		self::$route = $route;
+	}
+
+	/**
 	 * Retrieve active route
 	 * @return array
 	 */
 	public static function getActiveRoute(){
 
 		if( !self::$route ){
-			self::$route = self::getRoute(
+
+			$route = self::getRoute(
 				self::getQuery(),
 				self::getHttpMethod()
 			);
+
+			self::setActiveRoute($route);
+
 		}
 
 		return self::$route;
@@ -185,9 +225,9 @@ abstract class Router{
 			if( preg_match($pattern, $uri) OR $router['rule'] == $uri ){
 
 				$rule = $router['rule'];
-				$controller = $router['controller'];
-				$method = $router['method'];
+				$callback = $router['callback'];
 				$parameters = FALSE;
+				$options = array();
 
 				if( is_array($router['parameters']) ){
 					$parameters = array();
@@ -197,7 +237,8 @@ abstract class Router{
 						// Segments
 						if( strpos($parameter, '$') === 0
 							AND is_numeric(str_replace('$', '', $parameter)) ){
-							$parameter = self::getSegment(str_replace('$', '', $parameter));
+							$parameter = str_replace('$', '', $parameter);
+							$parameter = self::getSegment($parameter);
 						}
 
 						$parameters[] = $parameter;
@@ -207,16 +248,23 @@ abstract class Router{
 
 				// Check for not authorized parameters
 				if( $parameters == FALSE
-					AND self::getSegment((int) count(explode('/', $rule)) + (int) 1) ){
+					AND self::getSegment( count(explode('/', $rule)) + 1) ){
 					continue;
 				}
 
+				if( !$parameters ){
+					$parameters = array();
+				}
+
+				if( is_array($router['options']) ){
+					$options = $router['options'];
+				}
+
 				$route = array(
-					'route' => $rule,
-					'controller' => $controller,
-					'method' => $method,
+					'rule' => $rule,
+					'callback' => $callback,
 					'parameters' => $parameters,
-					'contentType' => $router['contentType']
+					'options' => $options
 				);
 
 				break;
@@ -228,7 +276,7 @@ abstract class Router{
 	}
 
 	/**
-	 * Process request and run controller
+	 * Process request and run callback
 	 * @return void
 	 */
 	public static function runRequest(){
@@ -239,16 +287,25 @@ abstract class Router{
 			return self::runError(404);
 		}
 
-		if( !is_null($route['contentType']) ){
-			Header::contentType($route['contentType']);
-			Header::send();
+		$options = $route['options'];
+
+		if( $options
+			AND isset($options['contentType'])
+			AND !is_null($options['contentType']) ){
+			Header::contentType($options['contentType']);
 		}
 
-		return self::runController(
-			$route['controller'],
-			$route['method'],
-			$route['parameters'],
-			TRUE
+		if( $options
+			AND isset($options['status'])
+			AND !is_null($options['status']) ){
+			Header::status($options['status']);
+		}
+
+		Header::send();
+
+		return self::runCallback(
+			$route['callback'],
+			$route['parameters']
 		);
 	}
 
@@ -277,13 +334,18 @@ abstract class Router{
 	 * Set routers to APP
 	 * @param string $httpMethod
 	 * @param string $rule
-	 * @param string $controller
-	 * @param string $method
+	 * @param string $callback
 	 * @param array $parameters
-	 * @param string $contentType
+	 * @param array $options
 	 * @return void
 	 */
-	public static function set($httpMethod, $rule, $controller, $method, $parameters = array(), $contentType = NULL){
+	public static function set(
+		$httpMethod,
+		$rule,
+		$callback,
+		$parameters = array(),
+		$options = array()
+		){
 
 		if( is_array($httpMethod) ){
 
@@ -291,77 +353,67 @@ abstract class Router{
 				self::set(
 					$new,
 					$rule,
-					$controller,
-					$method,
+					$callback,
 					$parameters,
-					$contentType
+					$options
 				);
 			}
 
 			return;
 		}
 
+		$path = self::getPath(). trim($rule, '/');
+
 		$router = array(
-			'rule' => ($rule !== '/') ? rtrim($rule,'/') : $rule,
-			'controller' => $controller,
-			'method' => $method,
+			'rule' => $path,
+			'callback' => $callback,
 			'parameters' => $parameters,
-			'contentType' => $contentType
+			'options' => $options
 		);
 
 		self::$routers[ $httpMethod ][] = $router;
 	}
 
 	/**
-	 * Set error controllers when router goes wrong
+	 * Set error callback when router goes wrong
 	 * @param string $number
-	 * @param string $controller
-	 * @param string $method
+	 * @param string $callback
 	 * @return void
 	 */
-	public static function setError($number, $controller, $method){
+	public static function setError($number, $callback){
 
 		self::$errors[$number] = array(
-			'controller' => $controller,
-			'method' => $method
+			'callback' => $callback
 		);
 
 	}
 
-	// CONTROLLER METHODS
+	// CALLBACK METHODS
 
 	/**
-	 * Instantiate a controller with singleton
-	 * @param string $controller
-	 * @param boolean|string $method
-	 * @param boolean|array $parameters
-	 * @param boolean $run
+	 * Run callback
+	 * @param string $callback
+	 * @param array $parameters
 	 * @return object
 	 */
-	public static function runController($controller, $method = FALSE, $parameters = FALSE, $run = FALSE){
+	public static function runCallback($callback, $parameters = array()){
+
+		$callback = explode('@', $callback);
+		$controller = $callback[0];
+		$method = $callback[1];
 
 		if( !class_exists($controller) ){
-			return self::runError();
+			return self::runError(500);
 		}
 
 		$controller = App::singleton($controller);
 
-		if( $run ){
-
-			// If method not exists or is not public
-			if( !is_callable(array($controller, $method)) ){
-				return self::runError();
-			}
-
-			if( is_array($parameters) ){
-				call_user_func_array(array($controller, $method), $parameters);
-			}else{
-				$controller->$method();
-			}
-
+		// If method not exists or is not public
+		if( !is_callable(array($controller, $method)) ){
+			return self::runError(500);
 		}
 
-		return $controller;
+		return $controller->$method(...$parameters);
 	}
 
 	/**
@@ -371,28 +423,30 @@ abstract class Router{
 	 */
 	public static function runError($number = 404){
 
-		if( !isset(Router::$errors[$number]) ){
-			die('Error '. $number);
+		if( !isset(self::$errors[$number]) ){
+			die('Router error '. $number);
 		}
 
-		$controller = Router::$errors[$number]['controller'];
-		$method = Router::$errors[$number]['method'];
+		$callback = self::$errors[ $number ]['callback'];
 
-		Header::status($number);
-		Header::send();
+		self::setActiveRoute(array(
+			'rule' => $number,
+			'callback' => $callback,
+			'parameters' => array(),
+			'options' => array('status' => $number)
+		));
 
-		$controller = App::singleton($controller);
-		$controller->$method();
+		self::runRequest();
 
 	}
 
 	// URL METHODS
 
 	/**
-	* Create valid URI
-	* @param string $text
-	* @return string
-	*/
+	 * Create valid URI
+	 * @param string $text
+	 * @return string
+	 */
 	public static function createUri($text){
 
 		$text = strtolower($text);
@@ -423,12 +477,12 @@ abstract class Router{
 	}
 
 	/**
-	* Create and format URL
-	* @param string $url
-	* @param string $path
-	* @param string $query
-	* @return string
-	*/
+	 * Create and format URL
+	 * @param string $url
+	 * @param string $path
+	 * @param string $query
+	 * @return string
+	 */
 	public static function createUrl($url, $path = '', $query = NULL){
 
 		$url = trim($url, '/');
@@ -447,16 +501,16 @@ abstract class Router{
 	}
 
 	/**
-	* Retrieve URL
-	* @param string $path
-	* @param string $query
-	* @param boolean $ignoreLanguage
-	* @return string
-	*/
+	 * Retrieve URL
+	 * @param string $path
+	 * @param string $query
+	 * @param boolean $ignoreLanguage
+	 * @return string
+	 */
 	public static function getUrl($path = '', $query = NULL, $ignoreLanguage = TRUE){
 
 		if( $path == '$this' ){
-			$path = ($query == TRUE) ? Router::$url : Router::$query;
+			$path = ($query == TRUE) ? self::$url : self::$query;
 			$query = NULL;
 			$ignoreLanguage = TRUE;
 		}
@@ -471,31 +525,31 @@ abstract class Router{
 	}
 
 	/**
-	* Print URL
-	* @param string $path
-	* @param string $query
-	* @return void
-	*/
+	 * Print URL
+	 * @param string $path
+	 * @param string $query
+	 * @return void
+	 */
 	public static function url($path = '', $query = NULL){
 		echo self::getUrl($path, $query);
 	}
 
 	/**
-	* Retrieve URL for language
-	* @param string $path
-	* @param string $query
-	* @return string
-	*/
+	 * Retrieve URL for language
+	 * @param string $path
+	 * @param string $query
+	 * @return string
+	 */
 	public static function getLanguageUrl($path = '', $query = NULL){
 		return self::getUrl($path, $query, FALSE);
 	}
 
 	/**
-	* Print URL for language
-	* @param string $path
-	* @param string $query
-	* @return void
-	*/
+	 * Print URL for language
+	 * @param string $path
+	 * @param string $query
+	 * @return void
+	 */
 	public static function languageUrl($path = '', $query = NULL){
 		echo self::getLanguageUrl($path, $query);
 	}
