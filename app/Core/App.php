@@ -1,18 +1,18 @@
 <?php
 
-abstract class App{
+abstract class App {
 
 	/**
 	 * Singleton instances
-	 * @var array
+	 * @var mixed
 	 */
-	private static $instances = array();
+	private static $instances = NULL;
 
 	/**
 	 * Configs
-	 * @var array
+	 * @var mixed
 	 */
-	private static $config = array();
+	private static $config = NULL;
 
 	/**
 	 * Import all files from folder
@@ -70,18 +70,63 @@ abstract class App{
 	}
 
 	/**
+	 * Load module config on App
+	 * @param string $namespace
+	 * @return void
+	 */
+	public static function loadModule($namespace){
+
+		$folder = str_replace('\\', DS, $namespace);
+		$folder = trim($folder, DS);
+
+		self::importFolder(SRC. $folder. DS. 'Config');
+
+	}
+
+	/**
+	 * Retrieve Config object
+	 * @return object
+	 */
+	public static function getConfig(){
+
+		if( self::$config == NULL ){
+			self::$config = new \Object;
+		}
+
+		return self::$config;
+	}
+
+	/**
+	 * Retrieve object instances
+	 * @return object
+	 */
+	public static function getInstances(){
+
+		if( self::$instances == NULL ){
+			self::$instances = new \Object;
+		}
+
+		return self::$instances;
+	}
+
+	/**
 	 * Set config data
 	 * @param string|array $key
 	 * @param string $value
-	 * @return mixed
+	 * @return void
 	 */
 	public static function set($key, $value = NULL){
 
+		$config = self::getConfig();
+
 		if( is_array($key) ){
-			return self::$config = array_merge(self::$config, $key);
+			foreach( $key as $k => $v ){
+				$config->setData($k, $v);
+			}
+			return;
 		}
 
-		return self::$config[$key] = $value;
+		$config->setData($key, $value);
 	}
 
 	/**
@@ -91,54 +136,37 @@ abstract class App{
 	 */
 	public static function delete($key){
 
+		$config = self::getConfig();
+
 		if( is_array($key) ){
-
 			foreach( $key as $item ){
-				self::delete($item);
+				$config->unsetData($item);
 			}
-
 			return;
 		}
 
-		unset(self::$config[$key]);
+		$config->unsetData($key);
 	}
 
 	/**
 	 * Retrieve config data
-	 * @param string|array $key
+	 * @param string $key
 	 * @param string $sub
 	 * @return mixed
 	 */
-	public static function get($key = NULL, $sub = NULL){
+	public static function get($key){
 
-		if( is_null($key) ){
-			return self::$config;
-		}
+		$config = self::getConfig();
 
 		if( is_array($key) ){
-
+			$new = array();
 			foreach( $key as $item ){
-				$new[$item] = self::get($item, $sub);
+				$new[$item] = $config->getData($item);
 			}
-
 			return $new;
 		}
 
-		if( isset(self::$config[$key]) ){
-
-			// Check with sub data
-			if( !is_null($sub)
-				AND isset(self::$config[$key][$sub]) ){
-				return self::$config[$key][$sub];
-			}
-
-			if( is_null($sub) ){
-				return self::$config[$key];
-			}
-
-		}
-
-		return FALSE;
+		return $config->getData($key);
 	}
 
 	/**
@@ -148,11 +176,49 @@ abstract class App{
 	 */
 	public static function singleton($class){
 
-		if( !array_key_exists($class, self::$instances) ){
-			self::$instances[$class] = new $class;
+		$instances = self::getInstances();
+
+		if( !$instances->hasData($class) ){
+			$instances->setData($class, new $class);
 		}
 
-		return self::$instances[$class];
+		return $instances->getData($class);
+	}
+
+	/**
+	 * Run method
+	 * @param string $method
+	 * @param array $parameters
+	 * @return object
+	 */
+	public static function runMethod($method, $parameters = array()){
+
+		if( strpos($method, '@') !== FALSE ){
+
+			$method = explode('@', $method);
+			$class = $method[0];
+			$classMethod = $method[1];
+
+			if( !class_exists($class) ){
+				throw new \Exception($class. ' not found');
+			}
+
+			// If method not exists or is not public
+			if( !is_callable(array($class, $classMethod)) ){
+				throw new \Exception($class. '::'. $classMethod. ' is not callable or not exists');
+			}
+
+			$class = self::singleton($class);
+
+			return $class->$classMethod(...$parameters);
+		}
+
+		// If function not exists or is not public
+		if( !is_callable($method) ){
+			throw new \Exception($method. ' is not callable or not exists');
+		}
+
+		return $method(...$parameters);
 	}
 
 }

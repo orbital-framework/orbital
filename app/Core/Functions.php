@@ -8,12 +8,11 @@
 function __autoload($class){
 
 	$file = str_replace('_', DS, $class). '.php';
+	$file = str_replace('\\', DS, $file);
 
 	foreach (array(
-		APP. 'Classes'. DS. $file,
-		APP. 'Classes/Model'. DS. $file,
-		APP. 'Classes/Libraries'. DS. $file,
-		VENDOR. $file
+		SRC. $file,
+		APP. 'Libraries'. DS. $file
 	) as $file) {
 
 		if( is_file($file) ){
@@ -33,7 +32,7 @@ spl_autoload_register('__autoload');
  * @return string
  */
 function __($string, $scope = NULL, $language = NULL){
-	return I18n::get($string, $scope, $language);
+	return \I18n::get($string, $scope, $language);
 }
 
 /**

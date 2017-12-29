@@ -1,6 +1,6 @@
 <?php
 
-abstract class I18n{
+abstract class I18n {
 
 	/**
 	 * Active language
@@ -37,9 +37,9 @@ abstract class I18n{
 			$language = self::getLanguage();
 		}
 
-		$folder = APP. 'i18n'. DS. $language;
+		$folder = APP. 'I18n'. DS. $language;
 
-		App::importFolder($folder);
+		\App::importFolder($folder);
 	}
 
 	/**

@@ -1,6 +1,6 @@
 <?php
 
-abstract class View{
+abstract class View {
 
 	/**
 	 * View data
@@ -51,7 +51,7 @@ abstract class View{
 			self::$data[ self::$level ] = (array) $data;
 		}
 
-		$file = APP. "Views/{$view}.php";
+		$file = SRC. "{$view}.php";
 
 		// Parse view
 		ob_start();

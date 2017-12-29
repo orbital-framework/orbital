@@ -1,6 +1,6 @@
 <?php
 
-abstract class Observer{
+abstract class Observer {
 
 	/**
 	 * Observers
@@ -11,17 +11,16 @@ abstract class Observer{
 	/**
 	 * Add watches to event
 	 * @param string $event
-	 * @param string $class
-	 * @param string $method
+	 * @param string $callback
 	 * @return void
 	 */
-	public static function on($event, $class, $method){
+	public static function on($event, $callback){
 
 		if( !isset(self::$observers[ $event ]) ){
 			self::$observers[ $event ] = array();
 		}
 
-		self::$observers[ $event ][] = array($class, $method);
+		self::$observers[ $event ][] = $callback;
 	}
 
 	/**
@@ -49,9 +48,9 @@ abstract class Observer{
 		$observers = self::$observers[ $event ];
 
 		foreach( $observers as $observer ){
-			$ret = call_user_func_array($observer, array($parameters));
+			$result = \App::runMethod($observer, $parameters);
 			if( $overwrite ){
-				$parameters = $ret;
+				$parameters = $result;
 			}
 		}
 

@@ -28,7 +28,10 @@ define('DS', DIRECTORY_SEPARATOR);
 define('BASE', realpath(dirname( dirname(__FILE__) )). DS);
 
 // App dir
-define('APP', realpath(dirname(__FILE__)). DS);
+define('APP', BASE. 'app'. DS);
+
+// Src dir
+define('SRC', BASE. 'src'. DS);
 
 // Vendor dir
 define('VENDOR', BASE. 'vendor'. DS);
@@ -61,7 +64,13 @@ ini_set('error_log', LOGS. 'error.log');
 require_once APP. 'Core'. DS. 'App.php';
 
 App::importFile(APP. 'Core' , array(
-	'Functions', 'Header', 'I18n', 'Router', 'View', 'Observer'
+	'Functions',
+	'Object',
+	'Observer',
+	'Router',
+	'Header',
+	'View',
+	'I18n'
 ));
 
 // App config

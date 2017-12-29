@@ -1,6 +1,6 @@
 <?php
 
-abstract class Router{
+abstract class Router {
 
 	/**
 	 * Router URL
@@ -100,7 +100,7 @@ abstract class Router{
 	/**
 	 * Retrive route query segment
 	 * @param int $number
-	 * @return string|FALSE
+	 * @return string|boolean
 	 */
 	public static function getSegment($number){
 
@@ -292,21 +292,51 @@ abstract class Router{
 		if( $options
 			AND isset($options['contentType'])
 			AND !is_null($options['contentType']) ){
-			Header::contentType($options['contentType']);
+			\Header::contentType($options['contentType']);
 		}
 
 		if( $options
 			AND isset($options['status'])
 			AND !is_null($options['status']) ){
-			Header::status($options['status']);
+			\Header::status($options['status']);
 		}
 
-		Header::send();
+		\Header::send();
 
-		return self::runCallback(
-			$route['callback'],
-			$route['parameters']
-		);
+		try{
+			$result = \App::runMethod(
+				$route['callback'],
+				$route['parameters']
+			);
+		} catch(\Exception $e) {
+			$result = self::runError(500);
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Force error on request
+	 * @param int $number
+	 * @return void
+	 */
+	public static function runError($number = 404){
+
+		if( !isset(self::$errors[$number]) ){
+			die('Router error '. $number);
+		}
+
+		$callback = self::$errors[ $number ]['callback'];
+
+		self::setActiveRoute(array(
+			'rule' => $number,
+			'callback' => $callback,
+			'parameters' => array(),
+			'options' => array('status' => $number)
+		));
+
+		self::runRequest();
+
 	}
 
 	/**
@@ -388,58 +418,6 @@ abstract class Router{
 
 	}
 
-	// CALLBACK METHODS
-
-	/**
-	 * Run callback
-	 * @param string $callback
-	 * @param array $parameters
-	 * @return object
-	 */
-	public static function runCallback($callback, $parameters = array()){
-
-		$callback = explode('@', $callback);
-		$controller = $callback[0];
-		$method = $callback[1];
-
-		if( !class_exists($controller) ){
-			return self::runError(500);
-		}
-
-		$controller = App::singleton($controller);
-
-		// If method not exists or is not public
-		if( !is_callable(array($controller, $method)) ){
-			return self::runError(500);
-		}
-
-		return $controller->$method(...$parameters);
-	}
-
-	/**
-	 * Force error on request
-	 * @param int $number
-	 * @return void
-	 */
-	public static function runError($number = 404){
-
-		if( !isset(self::$errors[$number]) ){
-			die('Router error '. $number);
-		}
-
-		$callback = self::$errors[ $number ]['callback'];
-
-		self::setActiveRoute(array(
-			'rule' => $number,
-			'callback' => $callback,
-			'parameters' => array(),
-			'options' => array('status' => $number)
-		));
-
-		self::runRequest();
-
-	}
-
 	// URL METHODS
 
 	/**
@@ -515,10 +493,11 @@ abstract class Router{
 			$ignoreLanguage = TRUE;
 		}
 
-		$url = App::get('url');
+		$url = \App::get('url');
 
-		if( !$ignoreLanguage AND I18n::getLanguagePath() ){
-			$url .= '/'. trim(I18n::getLanguagePath(), '/');
+		if( !$ignoreLanguage
+			AND \I18n::getLanguagePath() ){
+			$url .= '/'. trim(\I18n::getLanguagePath(), '/');
 		}
 
 		return self::createUrl($url, $path, $query);

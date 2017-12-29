@@ -1,6 +1,6 @@
 <?php
 
-abstract class Header{
+abstract class Header {
 
 	/**
 	 * HTTP Status
