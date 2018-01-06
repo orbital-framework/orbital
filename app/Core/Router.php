@@ -393,7 +393,8 @@ abstract class Router {
 		}
 
 		$path = self::getPath(). trim($rule, '/');
-
+		$path = str_replace('//', '/', $path);
+		
 		$router = array(
 			'rule' => $path,
 			'callback' => $callback,
