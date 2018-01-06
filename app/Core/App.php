@@ -193,7 +193,12 @@ abstract class App {
 	 */
 	public static function runMethod($method, $parameters = array()){
 
-		if( strpos($method, '@') !== FALSE ){
+		if( !is_array($parameters) ){
+			$parameters = array($parameters);
+		}
+
+		if( is_string($method)
+			AND strpos($method, '@') !== FALSE ){
 
 			$method = explode('@', $method);
 			$class = $method[0];

@@ -35,26 +35,22 @@ abstract class Observer {
 	/**
 	 * Fire event and process all watches
 	 * @param string $event
-	 * @param array $parameters
-	 * @param boolean $overwrite
+	 * @param array $data
 	 * @return mixed
 	 */
-	public static function fire($event, $parameters = array(), $overwrite = FALSE){
+	public static function fire($event, $data = array()){
 
 		if( !isset(self::$observers[ $event ]) ){
-			return $parameters;
+			return $data;
 		}
 
 		$observers = self::$observers[ $event ];
 
 		foreach( $observers as $observer ){
-			$result = \App::runMethod($observer, $parameters);
-			if( $overwrite ){
-				$parameters = $result;
-			}
+			\App::runMethod($observer, $data);
 		}
 
-		return $parameters;
+		return $data;
 	}
 
 }
