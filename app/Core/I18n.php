@@ -120,11 +120,12 @@ abstract class I18n {
 	/**
 	 * Retrieve translations to language
 	 * @param string $string
+	 * @param array $placeholders
 	 * @param string $scope
 	 * @param string $language
 	 * @return string
 	 */
-	public static function get($string, $scope = NULL, $language = NULL){
+	public static function get($string, $placeholders = array(), $scope = NULL, $language = NULL){
 
 		if( is_null($language) ){
 			$language = self::getLanguage();
@@ -144,6 +145,13 @@ abstract class I18n {
 			$text = self::$texts[$language][$scope][$string];
 		}else{
 			$text = $string;
+		}
+
+		if( is_array($placeholders)
+			AND $placeholders ){
+			foreach( $placeholders as $key => $value ){
+				$text = str_replace($key, $value, $text);
+			}
 		}
 
 		return $text;
