@@ -1,6 +1,6 @@
 <?php
 
-final class Object implements ArrayAccess {
+class Object implements ArrayAccess {
 
     /**
      * Object attributes
