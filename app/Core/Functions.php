@@ -23,27 +23,3 @@ function __autoload($class){
 
 }
 spl_autoload_register('__autoload');
-
-/**
- * Retrieve translation
- * @param string $string
- * @param array $placeholders
- * @param mixed $scope
- * @param mixed $language
- * @return string
- */
-function __($string, $placeholders = array(), $scope = NULL, $language = NULL){
-	return \I18n::get($string, $placeholders, $scope, $language);
-}
-
-/**
- * Show translation
- * @param string $string
- * @param array $placeholders
- * @param mixed $scope
- * @param mixed $language
- * @return void
- */
-function _e($string, $placeholders = array(), $scope = NULL, $language = NULL){
-	echo __($string, $placeholders, $scope, $language);
-}

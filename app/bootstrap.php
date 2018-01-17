@@ -69,8 +69,7 @@ App::importFile(APP. 'Core' , array(
 	'Observer',
 	'Router',
 	'Header',
-	'View',
-	'I18n'
+	'View'
 ));
 
 // App config

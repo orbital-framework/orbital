@@ -485,24 +485,24 @@ abstract class Router {
 
 	/**
 	 * Retrieve URL
-	 * @param string $path
+	 * @param string $location
 	 * @param string $query
-	 * @param boolean $ignoreLanguage
+	 * @param boolean $ignorePath
 	 * @return string
 	 */
-	public static function getUrl($path = '', $query = NULL, $ignoreLanguage = TRUE){
+	public static function getUrl($location = '', $query = NULL, $ignorePath = TRUE){
 
-		if( $path == '$this' ){
-			$path = ($query == TRUE) ? self::$url : self::$query;
+		if( $location == '$this' ){
+			$location = ($query == TRUE) ? self::$url : self::$query;
 			$query = NULL;
-			$ignoreLanguage = TRUE;
+			$ignorePath = TRUE;
 		}
 
 		$url = \App::get('url');
 
-		if( !$ignoreLanguage
-			AND \I18n::getLanguagePath() ){
-			$url .= '/'. trim(\I18n::getLanguagePath(), '/');
+		if( !$ignorePath
+			AND self::getPath() ){
+			$url .= '/'. trim(self::getPath(), '/');
 		}
 
 		return self::createUrl($url, $path, $query);
@@ -510,32 +510,13 @@ abstract class Router {
 
 	/**
 	 * Print URL
-	 * @param string $path
+	 * @param string $location
 	 * @param string $query
+	 * @param boolean $ignorePath
 	 * @return void
 	 */
-	public static function url($path = '', $query = NULL){
-		echo self::getUrl($path, $query);
-	}
-
-	/**
-	 * Retrieve URL for language
-	 * @param string $path
-	 * @param string $query
-	 * @return string
-	 */
-	public static function getLanguageUrl($path = '', $query = NULL){
-		return self::getUrl($path, $query, FALSE);
-	}
-
-	/**
-	 * Print URL for language
-	 * @param string $path
-	 * @param string $query
-	 * @return void
-	 */
-	public static function languageUrl($path = '', $query = NULL){
-		echo self::getLanguageUrl($path, $query);
+	public static function url($location = '', $query = NULL, $ignorePath = TRUE){
+		echo self::getUrl($location, $query, $ignorePath);
 	}
 
 }
