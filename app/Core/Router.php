@@ -427,12 +427,12 @@ abstract class Router {
 
 	/**
 	 * Create valid URI
-	 * @param string $text
+	 * @param string $string
 	 * @return string
 	 */
-	public static function createUri($text){
+	public static function createUri($string){
 
-		$text = strtolower($text);
+		$string = strtolower($string);
 
 		$accents = array(
 			'á', 'à', 'â', 'ã',
@@ -450,28 +450,28 @@ abstract class Router {
 			'u', 'u', 'u', 'c'
 		);
 
-		$text = str_replace($accents, $nonAccents, $text);
-		$text = preg_replace("/[^a-z0-9_\s-]/", "", $text);
-		$text = preg_replace("/[\s-]+/", " ", $text);
-		$text = preg_replace("/[\s_]/", "-", $text);
-		$text = trim($text, '-');
+		$string = str_replace($accents, $nonAccents, $string);
+		$string = preg_replace("/[^a-z0-9_\s-]/", "", $string);
+		$string = preg_replace("/[\s-]+/", " ", $string);
+		$string = preg_replace("/[\s_]/", "-", $string);
+		$string = trim($string, '-');
 
-		return $text;
+		return $string;
 	}
 
 	/**
 	 * Create and format URL
 	 * @param string $url
-	 * @param string $path
+	 * @param string $location
 	 * @param string $query
 	 * @return string
 	 */
-	public static function createUrl($url, $path = '', $query = NULL){
+	public static function createUrl($url, $location = '', $query = NULL){
 
 		$url = trim($url, '/');
 
-		if( !empty($path) ){
-			$url.= '/'. $path;
+		if( !empty($location) ){
+			$url .= '/'. $location;
 		}
 
 		if( !empty($query) ){
@@ -505,7 +505,7 @@ abstract class Router {
 			$url .= '/'. trim(self::getPath(), '/');
 		}
 
-		return self::createUrl($url, $path, $query);
+		return self::createUrl($url, $location, $query);
 	}
 
 	/**
