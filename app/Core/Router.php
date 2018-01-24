@@ -493,7 +493,7 @@ abstract class Router {
 	public static function getUrl($location = '', $query = NULL, $ignorePath = TRUE){
 
 		if( $location == '$this' ){
-			$location = ($query == TRUE) ? self::$url : self::$query;
+			$location = ($query == TRUE) ? self::getActiveUrl() : self::getQuery();
 			$query = NULL;
 			$ignorePath = TRUE;
 		}
@@ -517,6 +517,26 @@ abstract class Router {
 	 */
 	public static function url($location = '', $query = NULL, $ignorePath = TRUE){
 		echo self::getUrl($location, $query, $ignorePath);
+	}
+
+	/**
+	 * Retrieve Path URL
+	 * @param string $location
+	 * @param string $query
+	 * @return string
+	 */
+	public static function getPathUrl($location = '', $query = NULL){
+		return self::getUrl($location, $query, FALSE);
+	}
+
+	/**
+	 * Print Path URL
+	 * @param string $location
+	 * @param string $query
+	 * @return void
+	 */
+	public static function pathUrl($location = '', $query = NULL){
+		echo self::getPathUrl($location, $query, FALSE);
 	}
 
 }
