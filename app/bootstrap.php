@@ -4,7 +4,7 @@ if( version_compare(PHP_VERSION, '5.6') < 0 ):
 	die('Orbital requires a newer version of PHP. Upgrade to version 5.6 or higher.');
 endif;
 
-// Enviroment
+// Environment
 if( !defined('ENVIRONMENT') ){
 
 	$environment = 'production';
@@ -52,7 +52,8 @@ if( ENVIRONMENT == 'development' ):
 else:
 
 	ini_set('display_errors', 0);
-	error_reporting(0);
+	ini_set('display_startup_errors', 0);
+	error_reporting(E_ALL|E_STRICT);
 
 endif;
 
