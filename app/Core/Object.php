@@ -64,6 +64,8 @@ class Object implements ArrayAccess {
      */
     public function getData($key = ''){
 
+        $key = $this->normalizeKeyName($key);
+
         if( $key === '' ){
             return $this->_data;
         }
@@ -78,6 +80,7 @@ class Object implements ArrayAccess {
      * @return object
      */
     public function setData($key, $value){
+        $key = $this->normalizeKeyName($key);
         $this->_data[$key] = $value;
         return $this;
     }
@@ -99,6 +102,8 @@ class Object implements ArrayAccess {
      */
     public function unsetData($key = ''){
 
+        $key = $this->normalizeKeyName($key);
+
         if( $key === '' ){
             $this->_data = array();
         }else{
@@ -114,6 +119,8 @@ class Object implements ArrayAccess {
      * @return boolean
      */
     public function hasData($key = ''){
+
+        $key = $this->normalizeKeyName($key);
 
         if( empty($key) || !is_string($key) ){
             return !empty($this->_data);
