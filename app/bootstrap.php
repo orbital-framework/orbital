@@ -61,22 +61,17 @@ endif;
 ini_set('log_errors', 1);
 ini_set('error_log', LOGS. 'error.log');
 
-// App core
-require_once APP. 'Core'. DS. 'App.php';
-
-App::importFile(APP. 'Core' , array(
-    'Functions',
-    'Object',
-    'Observer',
-    'Router',
-    'Header',
-    'View'
-));
-
-// App config
-App::importFolder(APP. 'Config');
-
 // Vendor autoload
 if( file_exists(VENDOR. 'autoload.php') ){
     require_once VENDOR. 'autoload.php';
 }
+
+// App autoload
+if( file_exists(APP. 'autoload.php') ){
+    require_once APP. 'autoload.php';
+}
+
+// App config
+\Orbital\Framework\App::importFolder(
+    APP. 'Config'
+);

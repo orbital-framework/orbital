@@ -6,5 +6,7 @@
  * App::loadModule('\Acme\Example')
  */
 
+use \Orbital\Framework\App;
+
 App::loadModule('\Acme\Core');
 App::loadModule('\Acme\Site');
