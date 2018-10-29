@@ -70,8 +70,3 @@ if( file_exists(VENDOR. 'autoload.php') ){
 if( file_exists(APP. 'autoload.php') ){
     require_once APP. 'autoload.php';
 }
-
-// App config
-\Orbital\Framework\App::importFolder(
-    APP. 'Config'
-);

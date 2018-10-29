@@ -11,8 +11,7 @@ function __autoload($class){
     $file = str_replace('\\', DS, $file);
 
     foreach (array(
-        SRC. $file,
-        APP. 'Libraries'. DS. $file
+        SRC. $file
     ) as $file) {
 
         if( is_file($file) ){
