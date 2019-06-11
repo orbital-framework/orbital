@@ -1,7 +1,7 @@
 <?php
 
-if( version_compare(PHP_VERSION, '5.6') < 0 ):
-    die('Orbital requires a newer version of PHP. Upgrade to version 5.6 or higher.');
+if( version_compare(PHP_VERSION, '7.3') < 0 ):
+    die('Orbital requires a newer version of PHP. Upgrade to version 7.3 or higher.');
 endif;
 
 // Environment
