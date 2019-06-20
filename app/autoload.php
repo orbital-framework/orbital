@@ -5,7 +5,7 @@
  * @param string $class
  * @return void
  */
-function __autoload($class){
+spl_autoload_register(function($class){
 
     $file = str_replace('_', DS, $class). '.php';
     $file = str_replace('\\', DS, $file);
@@ -20,5 +20,4 @@ function __autoload($class){
 
     }
 
-}
-spl_autoload_register('__autoload');
+});
