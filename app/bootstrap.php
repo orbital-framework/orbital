@@ -62,3 +62,6 @@ ini_set('error_log', LOGS. 'error.log');
 if( file_exists(APP. 'autoload.php') ){
     require_once APP. 'autoload.php';
 }
+
+// App kernel
+require_once APP. 'kernel.php';

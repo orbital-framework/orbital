@@ -11,12 +11,5 @@ require_once __DIR__. '/../vendor/autoload.php';
 // Require app
 require_once __DIR__. '/../app/bootstrap.php';
 
-use Orbital\Framework\App;
-use Orbital\Framework\Router;
-
-// Load modules
-// App::loadModule('\Acme\Core');
-// App::loadModule('\Acme\Site');
-
 // Run router
-Router::runRequest();
+Orbital\Framework\Router::runRequest();
