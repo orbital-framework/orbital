@@ -5,11 +5,14 @@
  * https://github.com/orbital-framework
  */
 
-// Require app
-require_once '../app/bootstrap.php';
+// Vendor autoload
+require_once __DIR__. '/../vendor/autoload.php';
 
-use \Orbital\Framework\App;
-use \Orbital\Framework\Router;
+// Require app
+require_once __DIR__. '/../app/bootstrap.php';
+
+use Orbital\Framework\App;
+use Orbital\Framework\Router;
 
 // Load modules
 // App::loadModule('\Acme\Core');

@@ -25,16 +25,13 @@ if( !defined('ENVIRONMENT') ){
 define('DS', DIRECTORY_SEPARATOR);
 
 // Base dir
-define('BASE', realpath(dirname( dirname(__FILE__) )). DS);
+define('BASE', realpath(dirname(__DIR__)). DS);
 
 // App dir
 define('APP', BASE. 'app'. DS);
 
 // Src dir
 define('SRC', BASE. 'src'. DS);
-
-// Vendor dir
-define('VENDOR', BASE. 'vendor'. DS);
 
 // Logs dir
 define('LOGS', BASE. 'logs'. DS);
@@ -60,11 +57,6 @@ endif;
 // Logs
 ini_set('log_errors', 1);
 ini_set('error_log', LOGS. 'error.log');
-
-// Vendor autoload
-if( file_exists(VENDOR. 'autoload.php') ){
-    require_once VENDOR. 'autoload.php';
-}
 
 // App autoload
 if( file_exists(APP. 'autoload.php') ){
