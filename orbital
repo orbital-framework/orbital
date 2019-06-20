@@ -2,6 +2,8 @@
 <?php
 //
 // ORBITAL CLI
+// https://github.com/orbital-framework
+//
 // Command:
 // php orbital --env=(development|staging|production) ...
 //
