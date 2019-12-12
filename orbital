@@ -5,23 +5,13 @@
 // https://github.com/orbital-framework
 //
 // Command:
-// php orbital --env=(development|staging|production) ...
+// php orbital ...
 //
 // Recommended cron mode:
-// */5 * * * * php orbital --env=(development|staging|production) ... >> /logs/cron.log 2>&1
+// */5 * * * * php orbital ... >> /logs/cron.log 2>&1
 //
 
 set_time_limit(0);
-
-// Vendor autoload
-require_once __DIR__. '/vendor/autoload.php';
-
-// Environment definition
-$environment = Orbital\Framework\Request::arg(
-    'env', 'production'
-);
-
-define('ENVIRONMENT', $environment);
 
 // Require app
 require_once __DIR__. '/app/bootstrap.php';
