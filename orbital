@@ -5,10 +5,10 @@
 // https://github.com/orbital-framework
 //
 // Command:
-// php orbital --command=...
+// php orbital [command] ...
 //
 // Recommended cron mode:
-// */5 * * * * php orbital --command=... >> /logs/cron.log 2>&1
+// */5 * * * * php orbital [command] ... >> /logs/cron.log 2>&1
 //
 
 set_time_limit(0);
@@ -18,5 +18,5 @@ require_once __DIR__. '/app/bootstrap.php';
 
 // Run console command
 \Orbital\Console\Command::run(
-    \Orbital\Framework\Request::arg('command', NULL)
+    \Orbital\Framework\Request::arg('1', NULL)
 );
