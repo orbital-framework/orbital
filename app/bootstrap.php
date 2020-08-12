@@ -19,6 +19,16 @@ define('SRC', BASE. 'src'. DS);
 // Public dir
 define('WWW', BASE. 'www'. DS);
 
+// Vendor autoload
+if( file_exists(BASE. 'vendor/autoload.php') ):
+    require_once BASE. 'vendor/autoload.php';
+endif;
+
+// App autoload
+if( file_exists(APP. 'autoload.php') ):
+    require_once APP. 'autoload.php';
+endif;
+
 // Environment variables
 if( file_exists(APP. 'env.php') ):
     \Orbital\Env\Env::load(APP. 'env.php');
@@ -43,16 +53,6 @@ else:
     ini_set('display_startup_errors', 0);
     error_reporting(E_ALL|E_STRICT);
 
-endif;
-
-// Vendor autoload
-if( file_exists(BASE. 'vendor/autoload.php') ):
-    require_once BASE. 'vendor/autoload.php';
-endif;
-
-// App autoload
-if( file_exists(APP. 'autoload.php') ):
-    require_once APP. 'autoload.php';
 endif;
 
 // App kernel
