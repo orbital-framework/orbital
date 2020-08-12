@@ -1,13 +1,20 @@
 {
     "name": "orbital-framework/orbital",
     "description": "The Orbital Framework.",
-    "keywords": ["orbital-framework","core"],
+    "keywords": ["orbital-framework","core","project"],
     "homepage": "https://github.com/orbital-framework/orbital",
     "license": "MIT",
     "type": "project",
     "require": {
         "php": ">=7.3",
-        "orbital-framework/framework": "^1.2"
+        "orbital-framework/framework": "^1.3",
+        "orbital-framework/console": "^1.3",
+        "orbital-framework/http": "^1.3",
+        "orbital-framework/env": "^1.3",
+        "orbital-framework/generator": "^1.3",
+        "orbital-framework/security": "^1.3",
+        "orbital-framework/i18n": "^1.3",
+        "orbital-framework/mongodb": "^1.3"
     },
     "config": {
         "preferred-install": "dist",

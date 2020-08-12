@@ -9,4 +9,4 @@
 require_once __DIR__. '/../app/bootstrap.php';
 
 // Run router
-Orbital\Framework\Router::runRequest();
+\Orbital\Http\Router::runRequest();

@@ -1,5 +1,6 @@
 <?php
-use Orbital\Framework\App;
+
+use \Orbital\Framework\App;
 
 // Load modules
 // App::loadModule('\Acme\Core');

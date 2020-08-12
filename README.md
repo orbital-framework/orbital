@@ -14,6 +14,5 @@ composer require orbital-framework/mongodb
 ...
 ```
 
-Finally, edit your ``app/env.php`` file (don't forget to add this file on ``.gitignore``).
-
+Finally, create and edit your ``app/env.php`` file.
 Now develop your app and be happy :)

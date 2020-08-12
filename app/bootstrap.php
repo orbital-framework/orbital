@@ -21,20 +21,17 @@ define('WWW', BASE. 'www'. DS);
 
 // Environment variables
 if( file_exists(APP. 'env.php') ):
+    \Orbital\Env\Env::load(APP. 'env.php');
+endif;
 
-    $env = require_once APP. 'env.php';
-
-    foreach( $env as $key => $value ):
-        putenv("$key=$value");
-        $_ENV[ $key ] = $value;
-    endforeach;
-
+if( file_exists(APP. 'env.local.php') ):
+    \Orbital\Env\Env::load(APP. 'env.local.php');
 endif;
 
 // Errors
 ini_set('log_errors', 1);
 
-if( getenv('APP_ENVIRONMENT') == 'development' ):
+if( \Orbital\Env\Env::get('APP_ENVIRONMENT') == 'development' ):
 
     ini_set('display_errors', 1);
     ini_set('display_startup_errors', 1);

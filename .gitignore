@@ -1,0 +1,6 @@
+composer.lock
+.phpintel/
+.vscode/
+
+app/env.php
+app/env.local.php
