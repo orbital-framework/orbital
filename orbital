@@ -20,5 +20,5 @@ require_once __DIR__. '/app/bootstrap.php';
 
 // Run console command
 \Orbital\Console\Command::run(
-    \Orbital\Framework\Request::arg('1', NULL)
+    \Orbital\Framework\Request::arg('1', '')
 );
