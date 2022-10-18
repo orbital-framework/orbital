@@ -1,7 +1,8 @@
 <?php
+declare(strict_types=1);
 
-if( version_compare(PHP_VERSION, '7.3') < 0 ):
-    die('Orbital requires a newer version of PHP. Upgrade to version 7.3 or higher.');
+if( version_compare(PHP_VERSION, '8.1') < 0 ):
+    die('Orbital requires a newer version of PHP. Upgrade to version 8.1 or higher.');
 endif;
 
 // Pathname separator
@@ -41,7 +42,7 @@ endif;
 // Errors
 ini_set('log_errors', 1);
 
-if( \Orbital\Env\Env::get('APP_ENVIRONMENT') == 'development' ):
+if( \Orbital\Env\Env::get('APP_ENVIRONMENT') === 'development' ):
 
     ini_set('display_errors', 1);
     ini_set('display_startup_errors', 1);
